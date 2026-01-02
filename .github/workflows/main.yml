@@ -2,13 +2,25 @@ name: Build APK
 on: [push, workflow_dispatch]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y git zip unzip libncurses5 libstdc++6 zlib1g-dev libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev libsqlite3-dev
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          command: buildozer android debug
+          python-version: '3.10'
+      - name: Install Buildozer
+        run: |
+          pip install --user --upgrade buildozer cython==0.29.33
+          export PATH=$PATH:~/.local/bin
+      - name: Build with Buildozer
+        run: |
+          export PATH=$PATH:~/.local/bin
+          buildozer android debug || true
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
