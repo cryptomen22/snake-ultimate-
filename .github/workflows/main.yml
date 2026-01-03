@@ -24,9 +24,11 @@ jobs:
       - name: Build with Buildozer
         run: |
           buildozer init
-          # Автоматически меняем настройки под Pygame
+          # Настройка конфига специально под твой Pygame код
           sed -i 's/requirements = python3,kivy/requirements = python3,pygame,sdl2_ttf,sdl2_image,sdl2_mixer/' buildozer.spec
-          buildozer android debug || true
+          sed -i 's/#android.permissions = INTERNET/android.permissions = INTERNET/' buildozer.spec
+          # Запуск реальной сборки без заглушек
+          buildozer android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
