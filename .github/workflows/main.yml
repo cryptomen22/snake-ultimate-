@@ -1,4 +1,4 @@
-name: Final Build APK
+name: Build APK
 on: [push, workflow_dispatch]
 jobs:
   build:
@@ -23,13 +23,7 @@ jobs:
 
       - name: Build with Buildozer
         run: |
-          # Этот шаг удаляет старые файлы настроек, чтобы не было ошибок
-          rm -f buildozer.spec
-          buildozer init
-          # Настраиваем библиотеки именно под твой Pygame код
-          sed -i 's/requirements = python3,kivy/requirements = python3,pygame,sdl2_ttf,sdl2_image,sdl2_mixer/' buildozer.spec
-          sed -i 's/#android.permissions = INTERNET/android.permissions = INTERNET/' buildozer.spec
-          # Запуск сборки
+          # Мы просто запускаем сборку по готовому файлу spec
           buildozer android debug
 
       - name: Upload APK
